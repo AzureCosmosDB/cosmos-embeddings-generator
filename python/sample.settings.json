@@ -6,7 +6,6 @@
     "COSMOS_CONNECTION__accountEndpoint": "https://{my-cosmos-account}.documents.azure.com:443/",
     "COSMOS_DATABASE_NAME": "{database-name}",
     "COSMOS_CONTAINER_NAME": "{container-name}",
-    "COSMOS_OUTPUT_CONTAINER_NAME": "{container-name}",  
     "COSMOS_VECTOR_PROPERTY": "{vector-property-name}",
     "COSMOS_HASH_PROPERTY": "{hash-property-name}",
     "COSMOS_PROPERTY_TO_EMBED": "{property-to-generate-vectors-for}",
