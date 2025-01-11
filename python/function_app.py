@@ -36,7 +36,7 @@ app = func.FunctionApp()
 @app.cosmos_db_output(
     arg_name="output", 
     database_name="%COSMOS_DATABASE_NAME%", 
-    container_name="%COSMOS_OUTPUT_CONTAINER_NAME%", 
+    container_name="%COSMOS_CONTAINER_NAME%", 
     connection="COSMOS_CONNECTION")
 @app.cosmos_db_trigger(
     arg_name="input", 
