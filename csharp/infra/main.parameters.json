@@ -10,6 +10,12 @@
     },
     "principalId": {
       "value": "${AZURE_PRINCIPAL_ID}"
+    },
+    "functionsRuntimeName": {
+      "value": "dotnet-isolated"
+    },
+    "functionsRuntimeVersion": {
+      "value": "8.0"
     }
   }
 }

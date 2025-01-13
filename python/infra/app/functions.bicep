@@ -6,7 +6,7 @@ param planName string
 param appSettings object = {}
 param runtimeName string 
 param runtimeVersion string 
-param serviceName string = 'api'
+param serviceName string
 param storageAccountName string
 param deploymentStorageContainerName string
 param virtualNetworkSubnetId string = ''
@@ -14,7 +14,6 @@ param instanceMemoryMB int = 2048
 param maximumInstanceCount int = 100
 param identityId string = ''
 param identityClientId string = ''
-param aiServiceUrl string = ''
 
 var applicationInsightsIdentity = 'ClientId=${identityClientId};Authorization=AAD'
 
