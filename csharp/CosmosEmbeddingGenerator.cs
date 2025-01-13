@@ -45,14 +45,14 @@ namespace CosmosEmbeddingGenerator
         /// This function listens for changes to new or existing CosmosDb documents/items,
         /// and updates them in place with vector embeddings.
         ///
-        /// The expected document/item has at least these 3 properties, and note that 'text' 
+        /// The expected document/item has at least these 3 properties, and note that 'customerNotes' 
         /// is the property that gets embedded.
         ///
         /// Example document:
         /// {
-        ///     "id": "cosmosdb_overview_1",
-        ///     "customerId": "1",
-        ///     "text": "Azure Cosmos DB is a fully managed NoSQL, relational, and vector database. It offers single-digit millisecond response times, automatic and instant scalability, along with guaranteed speed at any scale. Business continuity is assured with SLA-backed availability and enterprise-grade security."
+        ///    "id": "00001",
+        ///    "customerId": "10001",
+        ///    "customerNotes": "lorum ipsum."
         /// }
         /// </summary>
         /// <param name="input">The list of documents that were modified in the CosmosDB container.</param>
