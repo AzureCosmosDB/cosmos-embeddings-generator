@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Attach to .NET Functions",
+        "type": "coreclr",
+        "request": "attach",
+        "processId": "${command:pickProcess}",
+        "preLaunchTask": "host start"
+      },
+      {
+        "name": "Run Functions Host",
+        "type": "coreclr",
+        "request": "launch",
+        "program": "${workspaceFolder}/bin/Debug/net8.0/workers/FunctionApp.dll",
+        "args": [],
+        "cwd": "${workspaceFolder}",
+        "stopAtEntry": false,
+        "console": "internalConsole",
+        "env": {
+          "AzureWebJobsStorage": "UseDevelopmentStorage=true"
+        },
+        "preLaunchTask": "host start"
+      }
+    ]
+  }
+  

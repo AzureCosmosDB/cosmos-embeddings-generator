@@ -25,9 +25,12 @@ param location string
 @description('User Id of the principal to assign database and application roles.')
 param principalId string = ''
 
-// serviceName is used as value for the tag (azd-service-name) azd uses to identify deployment host
-param serviceName string = 'embedding-generator'
+// serviceName is sent to functions module and used as value for the tag (azd-service-name) azd uses to identify deployment host
+param serviceName string = 'embeddingGenerator'
 
+//Passed from main.parameters.json
+param functionsRuntimeName string = ''
+param functionsRuntimeVersion string = ''
 
 // Optional parameters
 param functionAccountName string = ''
@@ -43,7 +46,6 @@ param userAssignedIdentityName string = ''
 var abbreviations = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 var tags = {
-  'azd-service-name': serviceName
   'azd-env-name': environmentName
   repo: 'https://github.com/AzureCosmosDB/cosmos-embeddings-generator'
 }
@@ -51,13 +53,12 @@ var deploymentStorageContainerName = 'app-package-container'
 
 
 var cosmosSettings = {
-  database: 'embeddings-generator-db'
+  database: 'embeddings-db'
   container: 'customer'
-  outputcontainer: 'customer'  // currently we output embeddings to the same container and same document/item
   partitionKey: 'customerId'
   vectorProperty: 'vectors'
   hashProperty: 'hash'
-  PropertyToEmbed: 'text'
+  PropertyToEmbed: 'customerNotes'
 }
 
 var openAiSettings = {
@@ -108,16 +109,17 @@ module storage 'core/storage/storage-account.bicep' = {
   }
 }
 
-module functions 'app/functions.bicep' = {
-  name: 'functions'
+module embeddingGenerator 'app/functions.bicep' = {
+  name: 'embeddingGenerator'
   scope: resourceGroup
   params: {
     name: !empty(functionAccountName) ? functionAccountName : '${abbreviations.functionApp}-${resourceToken}'
     location: location
     tags: tags
+    serviceName: serviceName  //used by azd in azure.yml to tag the deployment host
     planName: !empty(functionAppPlanName) ? functionAppPlanName : '${abbreviations.appServicePlan}-${resourceToken}'
-    runtimeName: 'python'
-    runtimeVersion: '3.11'
+    runtimeName: functionsRuntimeName
+    runtimeVersion: functionsRuntimeVersion
     storageAccountName: storage.outputs.name
     deploymentStorageContainerName: deploymentStorageContainerName
     identityId: identity.outputs.resourceId
@@ -133,11 +135,9 @@ module functions 'app/functions.bicep' = {
       COSMOS_CONNECTION__credential: 'managedidentity'
       COSMOS_CONNECTION__clientId: identity.outputs.clientId
       OPENAI_ENDPOINT: ai.outputs.endpoint
-      OPENAI_KEY: ai.outputs.key
       OPENAI_DEPLOYMENT_NAME: openAiSettings.embeddingDeploymentName
       OPENAI_DIMENSIONS: openAiSettings.dimensions
     }
-    aiServiceUrl: ai.outputs.endpoint
   }
 }
 
@@ -200,4 +200,3 @@ output COSMOS_PROPERTY_TO_EMBED string = cosmosSettings.PropertyToEmbed
 output OPENAI_ENDPOINT string = ai.outputs.endpoint
 output OPENAI_DEPLOYMENT_NAME string = openAiSettings.embeddingDeploymentName
 output OPENAI_DIMENSIONS string = openAiSettings.dimensions
-output APPLICATIONINSIGHTS_CONNECTION_STRING string = monitoring.outputs.applicationInsightsConnectionString

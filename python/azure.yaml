@@ -2,7 +2,19 @@ name: cosmos-embeddings-generator
 metadata:
   template: cosmos-embeddings-generator
 services:
-  api:
+  embeddingGenerator:
     project: ./
     language: python
     host: function
+hooks:
+  postprovision:
+    windows:
+      shell: pwsh
+      run: .\infra\scripts\createlocalsettings.ps1
+      interactive: true
+      continueOnError: false
+    posix:
+      shell: sh
+      run: ./infra/scripts/createlocalsettings.sh
+      interactive: true
+      continueOnError: false
