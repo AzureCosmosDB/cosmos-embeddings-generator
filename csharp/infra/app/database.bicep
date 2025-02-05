@@ -95,6 +95,18 @@ module cosmosDbContainers '../core/database/cosmos-db/nosql/container.bicep' = [
   }
 ]
 
+module cosmosDbLeases '../core/database/cosmos-db/nosql/container.bicep' = {
+  name: 'cosmos-db-container-leases'
+  params: {
+    name: 'leases'
+    parentAccountName: cosmosDbAccount.outputs.name
+    parentDatabaseName: cosmosDbDatabase.outputs.name
+    tags: tags
+    setThroughput: false
+    partitionKeyPaths: ['/id']
+  }
+}
+
 output endpoint string = cosmosDbAccount.outputs.endpoint
 output accountName string = cosmosDbAccount.outputs.name
 output connectionString string = cosmosDbAccount.outputs.connectionString
