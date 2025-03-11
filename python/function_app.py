@@ -45,7 +45,7 @@ app = func.FunctionApp()
     connection="COSMOS_CONNECTION", 
     lease_container_name="leases",
     create_lease_container_if_not_exists=True)
-async def cosmos_embedding_generator(input: func.DocumentList, output: func.Out[func.Document]):
+async def cosmos_embedding_generator(input: func.DocumentList, output: func.Out[func.DocumentList]):
     """
     This function listens for changes to new or existing CosmosDb documents/items,
     and updates them in place with vector embeddings.
@@ -63,6 +63,7 @@ async def cosmos_embedding_generator(input: func.DocumentList, output: func.Out[
 
     if input:
         logging.info('Documents modified: %s', len(input))
+        updatedDocs = func.DocumentList()
         for document in input:
             json_document = document.to_dict()
 
@@ -82,7 +83,12 @@ async def cosmos_embedding_generator(input: func.DocumentList, output: func.Out[
                 json_document[COSMOS_VECTOR_PROPERTY] = embeddings
 
                 # Serialize the result and return it to the output binding
-                output.set(func.Document.from_json(json.dumps(json_document)))
+                #output.set(func.Document.from_json(json.dumps(json_document)))
+                updatedDocs.append(func.Document.from_json(json.dumps(json_document)))
+        
+        if len(updatedDocs) > 0:
+            logging.info('Documents to be updated: %s', len(updatedDocs))
+            output.set(updatedDocs)
                 
 
 def is_document_new_or_modified(json_document: dict) -> tuple[bool, str]:
